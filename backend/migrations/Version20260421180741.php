@@ -16,10 +16,13 @@ final class Version20260421180741 extends AbstractMigration
             . 'does not emit the WHERE clause from <unique-constraint> options '
             . '(AbstractPlatform::supportsPartialIndexes() returns false for SQLite) and '
             . 'SqliteSchemaManager cannot introspect the WHERE condition of an existing partial '
-            . 'index. A future schema-diff will therefore propose dropping this index — ignore '
-            . 'that proposal. If the project ever moves to Postgres, migrate this into '
-            . 'Booking.dcm.xml as <unique-constraint> with <options><option name="where">... '
-            . 'and drop this migration.';
+            . 'index. Schema-diff alignment is handled by '
+            . 'App\\Infrastructure\\Doctrine\\EventListener\\BookingPartialUniqueIndexListener, '
+            . 'which mirrors a plain UNIQUE index into Doctrine\'s generated schema so the '
+            . 'comparator matches the (WHERE-blind) introspected one and proposes no diff. '
+            . 'If the project ever moves to Postgres, migrate this into Booking.dcm.xml as '
+            . '<unique-constraint> with <options><option name="where">..., drop this migration '
+            . 'and remove the listener.';
     }
 
     public function up(Schema $schema): void
