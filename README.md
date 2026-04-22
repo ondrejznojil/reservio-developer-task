@@ -68,6 +68,16 @@ Find out why this is happening and propose a fix on the backend.
 
 Create a Claude Code skill that solves a problem you actually hit while working on the main task. The skill must be functional and usable in the Claude Code CLI.
 
+### Submitted skill: `doctrine-uniqueness-constraint-auditor`
+
+Generalizes the core problem we hit while fixing this task: a business uniqueness invariant enforced only at the application layer, producing occasional duplicate rows under concurrency. The skill guides an auditor through identifying the invariant, choosing the right DB-level constraint for the dialect (plain UNIQUE / partial UNIQUE / generated-column / `EXCLUDE USING gist`), and working around Doctrine's SQLite limitations (no partial-index WHERE emission, no WHERE introspection — solved via a `postGenerateSchema` listener). Also covers handler-level exception translation and an integration-test template for the predicate-sensitive scenarios.
+
+Location: [`.claude/skills/doctrine-uniqueness-constraint-auditor/SKILL.md`](.claude/skills/doctrine-uniqueness-constraint-auditor/SKILL.md).
+
+Installation (zero-config): clone this repo and open it with Claude Code. Project-local skills in `.claude/skills/` are auto-discovered. To install globally, copy the directory to `~/.claude/skills/`.
+
+Trigger phrases (from the skill's `description`): production reports of occasional duplicates, `findOneBy` / `existsBy` followed by `persist`, mentions of "race condition" / "TOCTOU" / "double-submit", migrations for entities where double-booking would corrupt state, or code review around unique-constraint-adjacent code.
+
 ## Discussion Questions
 
 The following questions are **not part of the submission** — we'll go through them together during the interview.
