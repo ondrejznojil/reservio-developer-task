@@ -1,0 +1,8 @@
+# In-memory SQLite — same engine as dev DB, sufficient for current tests.
+# Switch `path` to a temp file if post-fail inspection via sqlite-web is needed.
+nettrine.dbal:
+    connection:
+        path: ':memory:'
+
+services:
+    - Tests\Support\Builder\ObjectBuilder
