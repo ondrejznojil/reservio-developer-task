@@ -8,6 +8,7 @@ use App\Domain\Barbershop\Entity\Booking;
 use App\Domain\Barbershop\Exception\NotFoundException;
 use App\Domain\Barbershop\Repository\BookingRepositoryInterface;
 use App\Domain\ValueObject\Uuid;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 
 final class DoctrineBookingRepository implements BookingRepositoryInterface
@@ -22,6 +23,9 @@ final class DoctrineBookingRepository implements BookingRepositoryInterface
             ?? throw new NotFoundException("Booking {$id} not found");
     }
 
+    /**
+     * @throws UniqueConstraintViolationException
+     */
     public function save(Booking $booking): void
     {
         $this->em->persist($booking);

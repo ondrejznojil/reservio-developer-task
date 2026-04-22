@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\UserInterface\GraphQL\Mutations\Barbershop;
 
 use App\Application\Barbershop\Command\CreateBooking\CreateBookingCommand;
+use App\Application\Barbershop\Exception\SlotAlreadyBookedException;
 use App\Application\Barbershop\Query\GetStylist\GetStylistQuery;
 use App\Domain\Barbershop\Entity\Stylist;
+use App\Domain\Barbershop\Exception\NotFoundException;
 use App\UserInterface\GraphQL\GraphQLContext;
 use GraphQL\Type\Definition\Type;
 use Rebing\GraphQL\Support\Facades\GraphQL;
@@ -52,7 +54,7 @@ final class CreateBookingMutation extends Mutation
             $stylist = $context->queryBus->ask(new GetStylistQuery($input['stylistId']));
 
             return ['stylist' => $stylist, 'errors' => []];
-        } catch (\DomainException $e) {
+        } catch (SlotAlreadyBookedException | NotFoundException $e) {
             return ['stylist' => null, 'errors' => [['field' => null, 'message' => $e->getMessage()]]];
         }
     }

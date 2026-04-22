@@ -7,6 +7,7 @@ namespace App\UserInterface\GraphQL\Mutations\Barbershop;
 use App\Application\Barbershop\Command\RejectBooking\RejectBookingCommand;
 use App\Application\Barbershop\Query\GetBooking\GetBookingQuery;
 use App\Domain\Barbershop\Entity\Booking;
+use App\Domain\Barbershop\Exception\NotFoundException;
 use App\UserInterface\GraphQL\GraphQLContext;
 use GraphQL\Type\Definition\Type;
 use Rebing\GraphQL\Support\Facades\GraphQL;
@@ -50,7 +51,7 @@ final class RejectBookingMutation extends Mutation
             $booking = $context->queryBus->ask(new GetBookingQuery($result->aggregateId));
 
             return ['booking' => $booking, 'errors' => []];
-        } catch (\DomainException $e) {
+        } catch (NotFoundException $e) {
             return ['booking' => null, 'errors' => [['field' => null, 'message' => $e->getMessage()]]];
         }
     }

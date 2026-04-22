@@ -48,6 +48,7 @@ services:
     - App\Infrastructure\Barbershop\Repository\DoctrineBookingRepository
     - App\Infrastructure\Barbershop\Repository\DoctrineStylistRepository
     - App\Infrastructure\Barbershop\Repository\DoctrineServiceRepository
+    - App\Infrastructure\Doctrine\EventListener\BookingPartialUniqueIndexListener
 
     createBookingHandler:
         class: App\Application\Barbershop\Command\CreateBooking\CreateBookingCommandHandler

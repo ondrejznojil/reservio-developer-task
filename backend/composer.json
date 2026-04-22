@@ -1,6 +1,9 @@
 {
     "name": "reservio/developer-task",
     "type": "project",
+    "scripts": {
+      "test": "phpunit"
+    },
     "require": {
         "php": "^8.5",
         "cellar/tactician": "^1.10",
@@ -17,7 +20,8 @@
         "tracy/tracy": "^2.10"
     },
     "require-dev": {
-        "doctrine/data-fixtures": "^2.2"
+        "doctrine/data-fixtures": "^2.2",
+        "phpunit/phpunit": "^11.4"
     },
     "autoload": {
         "files": [
