@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Application\Barbershop\Command\CreateBooking;
 
+use App\Application\Barbershop\Exception\SlotAlreadyBookedException;
 use App\Application\CommandResult;
 use App\Domain\Barbershop\Entity\Booking;
 use App\Domain\Barbershop\Repository\BookingRepositoryInterface;
@@ -11,6 +12,7 @@ use App\Domain\Barbershop\Repository\ServiceRepositoryInterface;
 use App\Domain\Barbershop\Repository\StylistRepositoryInterface;
 use App\Domain\ValueObject\UuidFactory;
 use DateTimeImmutable;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
 final class CreateBookingCommandHandler
 {
@@ -23,6 +25,7 @@ final class CreateBookingCommandHandler
 
     /**
      * @throws \DateMalformedStringException
+     * @throws SlotAlreadyBookedException
      */
     public function handle(CreateBookingCommand $command): CommandResult
     {
@@ -37,16 +40,20 @@ final class CreateBookingCommandHandler
         $end   = $start->modify("+{$service->getDurationMinutes()} minutes");
 
         $booking = new Booking(
-            $this->uuidFactory->generate(),
-            $service,
-            $stylist,
-            $start,
-            $end,
-            $command->customerName,
-            $command->customerContact,
+            id: $this->uuidFactory->generate(),
+            service: $service,
+            stylist: $stylist,
+            startTime: $start,
+            endTime: $end,
+            customerName: $command->customerName,
+            customerContact: $command->customerContact,
         );
 
-        $this->bookingRepository->save($booking);
+        try {
+            $this->bookingRepository->save($booking);
+        } catch (UniqueConstraintViolationException) {
+            throw new SlotAlreadyBookedException();
+        }
 
         return new CommandResult($booking->getId()->toString());
     }
