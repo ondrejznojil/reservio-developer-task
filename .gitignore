@@ -2,6 +2,12 @@
 .env.local
 .env.*.local
 
+# Claude Code personal settings
+.claude/settings.local.json
+
+# JetBrains IDE
+.idea/
+
 # PHP / Composer
 /backend/vendor/
 
